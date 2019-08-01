@@ -5,18 +5,19 @@ El código original está hecho en fortran, aquí lo reescribimos
 para python 3
 
 Dani risaro
-Febrero 2019
+Julio 2019
 """
 
+import matplotlib.pyplot as plt
 import numpy as np
 import sys
-sys.path.insert(0, '/home/daniu/Documentos/materias/Métodos Numéricos/Métodos Numéricos (Monografía Final)/modelo_QG_python')
+sys.path.insert(0, '/home/daniu/Documentos/materias/Métodos Numéricos/monografia_final/modelo_QG_python')
 import func_externas
 import params
 
 # Note: the subscript a,b,c denotes time steps t+1,t,t-1 respectively.
 
-directorio = '/home/daniu/Documentos/materias/Métodos Numéricos/Métodos Numéricos (Monografía Final)/modelo_QG_python/out_tmp/'
+directorio = '/home/daniu/Documentos/materias/Métodos Numéricos/monografia_final/modelo_QG_python/out_tmp/'
 
 pi     = np.pi
 zero   = 0.0
@@ -84,6 +85,10 @@ curlt = np.empty((nx, ny))
 delpsi = np.empty((nx, ny))
 delpsi4 = np.empty((nx, ny))
 
+jpp = 0
+jxp = 0
+jpx = 0
+
 # wind stress curl
 for i in range(params.im):
     for j in range(params.jm):
@@ -101,20 +106,20 @@ np.save(directorio + 'QG_wind_stress', curlt)
 # Integracion temporal
 #------------------------------------------------------------------------------
 
-for itime in range(params.nst,params.nend):
+for itime in range(params.nst,100):
     print('step number = ' + str(itime))      # imprime cada 100 pasos
 
     for i in range(1,imm1):
         for j in range(1,jmm1):
 
             # horizontal mixing
-            delpsi, delpsi4 = func_externas.horizontal_mixing(psic, dssqri, i, j)
+            delpsi, delpsi4 = func_externas.horizontal_mixing(delpsi, delpsi4, psic, dssqri, i, j)
 
             # Arakawa's jacobian
-            jpp, jxp, jpx = func_externas.arakawa_jacobian(pb, psib, dssqri4, i, j)
+            jpp, jxp, jpx = func_externas.arakawa_jacobian(jpp, jxp, jpx, pb, psib, dssqri4, i, j)
 
             # update vorticity
-            psia = func_externas.vorticity(psic, jpp, jxp, jpx, pb, curlt, delpsi,\
+            psia = func_externas.vorticity(psia, psic, jpp, jxp, jpx, pb, curlt, delpsi,\
                                             delpsi4, c1, c2, c3, c4, c5, c6, c7, i, j)
 
     # update stream function
@@ -124,7 +129,7 @@ for itime in range(params.nst,params.nend):
         # solve the Laplacian for the stream function by over-relaxation
         for i in range(2,imm2):
             for j in range(2,jmm2):
-                r, pa = func_externas.laplacian_p(pa, psia, dssqri, alfa, fxr, i, j)
+                r, pa = func_externas.laplacian_p(r, pa, psia, dssqri, alfa, fxr, i, j)
 
         # check convergence
         n1 = zero
