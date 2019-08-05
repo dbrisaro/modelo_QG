@@ -5,7 +5,7 @@ El código original está hecho en fortran, aquí lo reescribimos
 para python 3
 
 Dani risaro
-Julio 2019
+Agosto 2019
 """
 
 import matplotlib.pyplot as plt
@@ -34,7 +34,7 @@ c1     = epsdti
 c2     = params.BFP*(params.dt/params.ds)*epsdti
 c3     = 2.*params.dt*epsdti
 c4     = epsdt*epsdti
-c5     = 2.*params.dt*epsdti*params.Ro/3.0
+c5     = 2.*params.dt*epsdti*params.Ro      #/3.0
 c6     = 2.*params.dt*params.Ah*epsdti
 c7     = 2.*params.dt*params.Bh*epsdti
 
@@ -88,6 +88,12 @@ delpsi4 = np.empty((nx, ny))
 jpp = 0
 jxp = 0
 jpx = 0
+jxx = 0
+
+alpha = 1
+beta = 0
+gamma = 0
+delta = 0
 
 # wind stress curl
 for i in range(params.im):
@@ -106,7 +112,9 @@ np.save(directorio + 'QG_wind_stress', curlt)
 # Integracion temporal
 #------------------------------------------------------------------------------
 
-for itime in range(params.nst,100):
+#for itime in range(params.nst,30):
+for itime in range(100,200):
+
     print('step number = ' + str(itime))      # imprime cada 100 pasos
 
     for i in range(1,imm1):
@@ -116,11 +124,10 @@ for itime in range(params.nst,100):
             delpsi, delpsi4 = func_externas.horizontal_mixing(delpsi, delpsi4, psic, dssqri, i, j)
 
             # Arakawa's jacobian
-            jpp, jxp, jpx = func_externas.arakawa_jacobian(jpp, jxp, jpx, pb, psib, dssqri4, i, j)
+            jpp, jxp, jpx, jxx = func_externas.arakawa_jacobian(jpp, jxp, jpx, jxx, pb, psib, dssqri4, i, j)
 
             # update vorticity
-            psia = func_externas.vorticity(psia, psic, jpp, jxp, jpx, pb, curlt, delpsi,\
-                                            delpsi4, c1, c2, c3, c4, c5, c6, c7, i, j)
+            psia = func_externas.vorticity(psia, psic, jpp, jxp, jpx, jxx, pb, curlt, delpsi, delpsi4, c1, c2, c3, c4, c5, c6, c7, alpha, beta, gamma, delta, i, j)
 
     # update stream function
     nrelax = zero

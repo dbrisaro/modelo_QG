@@ -1,7 +1,7 @@
 """
 Funciones externas para el cómputo del modelo QG
 Dani risaro
-Julio 2019
+Agosto 2019
 
 """
 
@@ -52,10 +52,10 @@ def horizontal_mixing(delpsi, delpsi4, psic, delta, ix, iy):
 
     return delpsi, delpsi4
 
-def vorticity(psia, psic, jpp, jxp, jpx, jxx, pb, curlt, delpsi, delpsi4, c1, c2, c3, c4, c5, c6, c7, ix, iy):
+def vorticity(psia, psic, jpp, jxp, jpx, jxx, pb, curlt, delpsi, delpsi4, c1, c2, c3, c4, c5, c6, c7, alpha, beta, gamma, delta, ix, iy):
     # update vorticity
 
-    psia[ix,iy] = c1*psic[ix,iy] - c5*(jpp+jxp+jpx+jxx) - c2*(pb[ix+1,iy] -
+    psia[ix,iy] = c1*psic[ix,iy] - c5*(alpha*jpp + beta*jxp + gamma*jpx + delta*jxx) - c2*(pb[ix+1,iy] -
             pb[ix-1,iy]) + c3*curlt[ix,iy] - c4*psic[ix,iy] + c6*delpsi[ix,iy] - c7*delpsi4[ix,iy]
 
     return psia
