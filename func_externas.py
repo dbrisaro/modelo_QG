@@ -5,21 +5,42 @@ Julio 2019
 
 """
 
-def arakawa_jacobian(jpp, jxp, jpx, pb, psib, delta, ix, iy):
+# def arakawa_jacobian(jpp, jxp, jpx, pb, psib, delta, ix, iy):
+#     # Arakawa's jacobian
+#
+#     jpp = ((pb[ix+1,iy]-pb[ix-1,iy])*(psib[ix,iy+1]-psib[ix,iy-1])-
+#         (pb[ix,iy+1]-pb[ix,iy-1])*(psib[ix+1,iy]-psib[ix-1,iy]))*delta
+#
+#     jxp = (psib[ix,iy+1]*(pb[ix+1,iy+1]-pb[ix-1,iy+1])-psib[ix,iy-1]
+#         *(pb[ix+1,iy-1]-pb[ix-1,iy-1])-psib[ix+1,iy]*(pb[ix+1,iy+1]
+#         -pb[ix+1,iy-1])+psib[ix-1,iy]*(pb[ix-1,iy+1]-pb[ix-1,iy-1]))*delta
+#
+#     jpx = (pb[ix+1,iy]*(psib[ix+1,iy+1]-psib[ix+1,iy-1])-pb[ix-1,iy]
+#         *(psib[ix-1,iy+1]-psib[ix-1,iy-1])-pb[ix,iy+1]*(psib[ix+1,iy+1]
+#         -psib[ix-1,iy+1])+pb[ix,iy-1]*(psib[ix+1,iy-1]-psib[ix-1,iy-1]))*delta
+#
+#     return jpp, jxp, jpx
+
+def arakawa_jacobian(jpp, jxp, jpx, jxx, pb, psib, delta, ix, iy):
     # Arakawa's jacobian
 
     jpp = ((pb[ix+1,iy]-pb[ix-1,iy])*(psib[ix,iy+1]-psib[ix,iy-1])-
         (pb[ix,iy+1]-pb[ix,iy-1])*(psib[ix+1,iy]-psib[ix-1,iy]))*delta
 
-    jxp = (psib[ix,iy+1]*(pb[ix+1,iy+1]-pb[ix-1,iy+1])-psib[ix,iy-1]
-        *(pb[ix+1,iy-1]-pb[ix-1,iy-1])-psib[ix+1,iy]*(pb[ix+1,iy+1]
-        -pb[ix+1,iy-1])+psib[ix-1,iy]*(pb[ix-1,iy+1]-pb[ix-1,iy-1]))*delta
+    jxp = (psib[ix,iy+1]*(pb[ix+1,iy+1]-pb[ix-1,iy+1]) -
+           psib[ix,iy-1]*(pb[ix+1,iy-1]-pb[ix-1,iy-1]) -
+           psib[ix+1,iy]*(pb[ix+1,iy+1]-pb[ix+1,iy-1]) +
+           psib[ix-1,iy]*(pb[ix-1,iy+1]-pb[ix-1,iy-1]))*delta
 
-    jpx = (pb[ix+1,iy]*(psib[ix+1,iy+1]-psib[ix+1,iy-1])-pb[ix-1,iy]
-        *(psib[ix-1,iy+1]-psib[ix-1,iy-1])-pb[ix,iy+1]*(psib[ix+1,iy+1]
-        -psib[ix-1,iy+1])+pb[ix,iy-1]*(psib[ix+1,iy-1]-psib[ix-1,iy-1]))*delta
+    jpx = (pb[ix+1,iy]*(psib[ix+1,iy+1]-psib[ix+1,iy-1])-
+           pb[ix-1,iy]*(psib[ix-1,iy+1]-psib[ix-1,iy-1])-
+           pb[ix,iy+1]*(psib[ix+1,iy+1]-psib[ix-1,iy+1])+
+           pb[ix,iy-1]*(psib[ix+1,iy-1]-psib[ix-1,iy-1]))*delta
 
-    return jpp, jxp, jpx
+    jxx = ((pb[ix+1,iy+1]-pb[ix-1,iy-1])*(psib[ix-1,iy+1]-psib[ix+1,iy-1]) -
+          (pb[ix-1,iy+1]-pb[ix+1,iy-1])*(psib[ix+1,iy+1]-psib[ix-1,iy-1]))*(1/2)*delta
+
+    return jpp, jxp, jpx, jxx
 
 def horizontal_mixing(delpsi, delpsi4, psic, delta, ix, iy):
     # horizontal mixing
@@ -31,10 +52,10 @@ def horizontal_mixing(delpsi, delpsi4, psic, delta, ix, iy):
 
     return delpsi, delpsi4
 
-def vorticity(psia, psic, jpp, jxp, jpx, pb, curlt, delpsi, delpsi4, c1, c2, c3, c4, c5, c6, c7, ix, iy):
+def vorticity(psia, psic, jpp, jxp, jpx, jxx, pb, curlt, delpsi, delpsi4, c1, c2, c3, c4, c5, c6, c7, ix, iy):
     # update vorticity
 
-    psia[ix,iy] = c1*psic[ix,iy] - c5*(jpp+jxp+jpx) - c2*(pb[ix+1,iy] -
+    psia[ix,iy] = c1*psic[ix,iy] - c5*(jpp+jxp+jpx+jxx) - c2*(pb[ix+1,iy] -
             pb[ix-1,iy]) + c3*curlt[ix,iy] - c4*psic[ix,iy] + c6*delpsi[ix,iy] - c7*delpsi4[ix,iy]
 
     return psia
