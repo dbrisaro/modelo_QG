@@ -90,12 +90,15 @@ c     general constants
       c2     = BFP*(dt/ds)*epsdti
       c3     = 2.*dt*epsdti
       c4     = epsdt*epsdti
-      c5     = 2.*dt*epsdti*Ro	!/3.0
+      c5     = 2.*dt*epsdti*Ro	
       c6     = 2.*dt*Ah*epsdti
       c7     = 2.*dt*Bh*epsdti
+      alpha=0
+      beta=0  
+      gama=0 
       aa = alpha
-      bb  = beta
-      gg  = gama
+      bb = beta
+      gg = gama
 
       bc1 = -(1.-gamma*ds*0.5)/(1.+gamma*ds*0.5)
       bc2 =   1.-gamma*ds*0.5
@@ -217,7 +220,7 @@ c Arakawa's jacobian
 
 c update vorticity
 
-      psia(i,j)= c1*psic(i,j)-c5*(aa*jpp+bb*jxp+gg*jpx)- c2*(pb(i+1,j) -
+      psia(i,j)= c1*psic(i,j)-c5*(jpp*aa+jxp*bb+jpx*gg)- c2*(pb(i+1,j) -
      $               pb(i-1,j)) + c3*curlt(i,j) - c4*psic(i,j) + 
      $               c6*delpsi(i,j) - c7*delpsi4(i,j)
         enddo

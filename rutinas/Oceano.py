@@ -146,14 +146,14 @@ def graf_ecin(ecin,Nom_sim,dir_graf):
     import numpy as np
     import matplotlib.pyplot as plt
 
-    fig = plt.figure(figsize=(5,3))
-    plt.plot(np.squeeze(ecin[0,:,0]),np.squeeze(ecin[:,:,3]).T/100000,linewidth=2)
-    plt.xlabel('Numero de iteraciones',fontsize=8)
-    plt.ylabel('Energia cinetica $(*10^5)$',fontsize=8)
-    plt.title('Energia cinetica en funcion del numero de iteraciones', fontsize=8.5)
+    fig = plt.figure(figsize=(4,2))
+    plt.plot(np.squeeze(ecin[0,:,0]),np.squeeze(ecin[:,:,3]).T/100000,linewidth=0.5)
+    plt.xlabel('Numero de iteraciones',fontsize=6)
+    plt.ylabel('Energia cinetica $(*10^5)$',fontsize=6)
+    plt.title('Energia cinetica en funcion del numero de iteraciones', fontsize=7)
     plt.xticks(fontsize=6)
     plt.yticks(fontsize=6)
-    plt.legend(Nom_sim,fontsize=7,loc = 5)
+    plt.legend(Nom_sim,fontsize=6,loc = 5)
     fig.subplots_adjust(bottom=0.15,top=0.85,left=0.1,right=0.97)
     plt.savefig(dir_graf,dpi=500)
 
@@ -182,6 +182,7 @@ def graf_psiF(psiF_todos,X_todos,Y_todos,U_todos,L_todos,clevs,Nom_sim,dir_graf)
 
     fig, ax = plt.subplots(figsize=(6*3*int(3*(np.size(psiF_todos,0)/3-(int(np.size(psiF_todos,0)-0.01)/3))),4*int((np.size(psiF_todos,0)+1)/3)))
     gs = gridspec.GridSpec(int((np.size(psiF_todos,0)+1)/3),3*int(3*(np.size(psiF_todos,0)/3-(int(np.size(psiF_todos,0)-0.01)/3))))
+    gs = gridspec.GridSpec(int((np.size(psiF_todos,0)+1)/4),4*int(4*(np.size(psiF_todos,0)/4-(int(np.size(psiF_todos,0)-0.01)/4))))
 
     for k in range(np.size(psiF_todos,0)):
 
@@ -192,8 +193,8 @@ def graf_psiF(psiF_todos,X_todos,Y_todos,U_todos,L_todos,clevs,Nom_sim,dir_graf)
         cbar.ax.tick_params(labelsize=9,direction="in",length = 2,pad=2)
         plt.xticks(fontsize=8)
         plt.yticks(fontsize=8)
-        plt.xlabel('Longitug (km)',fontsize=8)
-        plt.ylabel('Longitug (km)',fontsize=8)
+        plt.xlabel('Longitud (km)',fontsize=8)
+        plt.ylabel('Longitud (km)',fontsize=8)
         plt.title(str(Nom_sim[k]),fontsize=12)
         fig.subplots_adjust(bottom=0.05,left=0.1,top=0.85,hspace=0.3, right =0.95)
         plt.suptitle('Función corriente $(*10^4 m^2/s)$', fontsize=14)
@@ -225,6 +226,7 @@ def graf_vortF(vortF_todos,X_todos,Y_todos,U_todos,L_todos,clevs,Nom_sim,dir_gra
 
     fig, ax = plt.subplots(figsize=(6*3*int(3*(np.size(vortF_todos,0)/3-(int(np.size(vortF_todos,0)-0.01)/3))),4*int((np.size(vortF_todos,0)+1)/3)))
     gs = gridspec.GridSpec(int((np.size(vortF_todos,0)+1)/3),3*int(3*(np.size(vortF_todos,0)/3-(int(np.size(vortF_todos,0)-0.01)/3))))
+    gs = gridspec.GridSpec(int((np.size(vortF_todos,0)+1)/4),4*int(4*(np.size(vortF_todos,0)/4-(int(np.size(vortF_todos,0)-0.01)/4))))
 
     for k in range(np.size(vortF_todos,0)):
 
@@ -235,8 +237,8 @@ def graf_vortF(vortF_todos,X_todos,Y_todos,U_todos,L_todos,clevs,Nom_sim,dir_gra
         cbar.ax.tick_params(labelsize=9,direction="in",length = 2,pad=2)
         plt.xticks(fontsize=8)
         plt.yticks(fontsize=8)
-        plt.xlabel('Longitug (km)',fontsize=8)
-        plt.ylabel('Longitug (km)',fontsize=8)
+        plt.xlabel('Longitud (km)',fontsize=8)
+        plt.ylabel('Longitud (km)',fontsize=8)
         plt.title(str(Nom_sim[k]),fontsize=12)
         fig.subplots_adjust(bottom=0.05,left=0.1,top=0.85,hspace=0.3, right =0.95)
         plt.suptitle('Vorticidad Relativa $(*10^{-7} s^{-1})$', fontsize=14)
